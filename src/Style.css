@@ -1,0 +1,59 @@
+
+.navbar{
+    height: 50px;
+    background-color: #002f4966;
+    color: rgb(14, 22, 26);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    
+}
+.navbar-logo{
+    padding-left: 20px;
+}
+.navbar-logo a{
+    text-decoration: none;
+    color: aquamarine;
+}
+.weather-icon{
+    height: 45px;
+}
+.navbar-search{
+    display: flex;
+    justify-content: center;
+}
+#search-bar{
+    width: 350px;
+    height: 42px;
+    /* border: none; */
+    /* border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px; */
+}
+
+#search-bar:hover{
+    border: 2px solid orange;
+    border-radius: 5px;
+    /* border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px; */
+}
+.mode-toggle{
+    height: 37px;
+    width: 50px;
+    margin-right: 10px;
+    font-size:larger;
+}
+.mode-toggle:hover{
+    border: 2px solid orange;
+    border-radius: 2px;
+}
+.weather-panel{
+    margin-top: 50px;
+    margin-left: 30px;
+    display: inline-block;
+    background-color: #669bbc81;
+    height: 430px;
+    width: 300px;
+    border-radius: 8px;
+    text-align: center;
+}
