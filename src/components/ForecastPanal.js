@@ -49,8 +49,8 @@ export default function ForecastPanel({ location }) {
           <p>Weather: {weatherData.weather[0].description}</p>
           <p>Humidity: {weatherData.main.humidity}%</p>
           <p>Wind Speed: {weatherData.wind.speed} m/s</p>
-          <p>Max Temperature: {Math.round(weatherData.main.temp_max)}°C</p>
-          <p>Min Temperature: {Math.round(weatherData.main.temp_min)}°C</p>
+          {/* <p>Max Temperature: {Math.round(weatherData.main.temp_max)}°C</p>
+          <p>Min Temperature: {Math.round(weatherData.main.temp_min)}°C</p> */}
           <p>Description: {weatherData.weather[0].main}</p>
         </div>
       ) : (

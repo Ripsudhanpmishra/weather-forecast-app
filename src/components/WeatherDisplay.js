@@ -36,28 +36,30 @@ export default function WeatherDisplay({location}) {
   // const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
 
   return (
-    
-    <div className='container' >
+    <div className='container'>
       <hr/>
       <h1>7-Day Weather Forecast</h1>
       {loading ? (
         <p>Loading...</p>
       ) : (
         <div>
-        <ul>
-          {forecast.length > 0 ? (
-            forecast.map((day, index) => (
-              <li key={index} className='box'>
-                <img src={`https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`} alt="Weather Icon" />
-                <p>{new Date(day.dt * 1000).toLocaleDateString()}</p>
-                <p>Temp: {day.main.temp}°C</p>  
-                <p>{day.weather[0].description}</p>
-              </li>
-            ))
-          ) : (
-            <p>No data available</p>
-          )}
-        </ul>
+          <ul>
+            {forecast.length > 0 ? (
+              forecast.map((day, index) => {
+                const date = new Date(day.dt * 1000).toLocaleDateString();
+                return (
+                  <li key={index} className='box'>
+                    <img src={`https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`} alt="Weather Icon" />
+                    <p>{date}</p>
+                    <p>Temp: {day.main.temp}°C</p>
+                    <p>{day.weather[0].description}</p>
+                  </li>
+                );
+              })
+            ) : (
+              <p>No data available</p>
+            )}
+          </ul>
         </div>
       )}
     </div>
