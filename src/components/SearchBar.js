@@ -1,52 +1,37 @@
-import '../Style.css';
-import React, { useState, useCallback } from 'react';
-import { debounce } from 'lodash';
+import React, { useState } from 'react';
+import searchIcon from '../search.png';
 
-export default function SearchBar({ onSearchChange, location }) {
-    const [search, setSearch] = useState("");
+function SearchBar({ onSearch }) {
+  const [city, setCity] = useState('');
 
-    // Use useCallback with an empty dependency array so it remains stable
-    const debouncedHandleChange = useCallback(
-        debounce((value) => {
-            setSearch(value);
-            console.log(value);
-            onSearchChange(value);
-        }, 0), // 2000ms (2-second delay)
-        [onSearchChange] // Only recreate when onSearchChange changes
-    );
+  const handleInputChange = (event) => {
+    setCity(event.target.value);
+  };
 
-    // Cleanup function to cancel debounced calls on unmount
-    React.useEffect(() => {
-        return () => debouncedHandleChange.cancel();
-    }, [debouncedHandleChange]);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (city.trim()) {
+      onSearch(city);
+    }
+  };
 
-    const handleOnChange = (event) => {
-        debouncedHandleChange(event.target.value);
-    };
-
-    return (
-        <div className="navbar">
-            <div className="navbar-logo">
-                <a href="/" title="Weather Home">
-                    <img src="logo.png" alt="Weather Icon" className="weather-icon" />Weather
-                </a>
-            </div>
-
-            <div className="navbar-location">
-                <span id="current-location"></span>{location}
-            </div>
-
-            <div className="navbar-search">
-                <input 
-                    type="text"
-                    id="search-bar"
-                    placeholder="Search city or region..."
-                    value={search}
-                    onChange={handleOnChange} // Fix: Use onChange instead of onKeyDown
-                />
-            </div>
-
-            <button id="mode-toggle" className="mode-toggle">🌙</button>
-        </div>
-    );
+  return (
+    <form onSubmit={handleSubmit} className="relative">
+      <input
+        type="text"
+        placeholder="Enter city..."
+        value={city}
+        onChange={handleInputChange}
+        className="w-full pl-4 pr-10 py-2 rounded-full bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <button
+        type="submit"
+        className="absolute inset-y-0 right-0 pr-3 flex items-center"
+      >
+        <img src={searchIcon} alt="Search" className="h-5 w-5" />
+      </button>
+    </form>
+  );
 }
+
+export default SearchBar;

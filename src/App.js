@@ -1,46 +1,59 @@
-import './App.css';
-import ForecastPanel from './components/ForecastPanal';
-import SearchBar from './components/SearchBar';
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
+import Sidebar from './components/Sidebar';
 import WeatherDisplay from './components/WeatherDisplay';
-
-const API_KEY = "0e15999fe3033f1c043ecf402d7219ed";
+import ForecastPanal from './components/ForecastPanal';
+import { fetchWeatherData, fetchForecastData } from './Api';
+import StartPage from './components/StartPage';
+import useThemeStore from './store/useThemeStore';
 
 function App() {
-  const[SearchData, setSearchData] = useState("Durgapur")
-  
-  const [currentWeatherData, setCurrentWeatherData] = useState(null);
-  const [forecast, setforecast] = useState(null);
+  const { theme } = useThemeStore();
 
-  const handleOnSearchChange = (searchData) => {
-    if(searchData){
-      setSearchData(searchData);
+   useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
     }
-    else setSearchData("Durgapur")
-    
-    // const [lat, lon] = searchData.value.split(" ");
+  }, [theme]);
 
-    // const currentWeatherFetch = fetch(`api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`);
-    // const forecastFatch = fetch(`api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}`);
+  const [weatherData, setWeatherData] = useState(null);
+  const [forecastData, setForecastData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-    // Promise.all([currentWeatherFetch], [forecastFatch])
-    //   .then(async (response) => {
-    //     const weatherResponse = await response[0].json();
-    //     const forecastResponse = await response[0].json();
-
-    //     setCurrentWeatherData({ city: searchData.label, ...weatherResponse });
-    //     setforecast({ city: searchData.label, ...forecastResponse});
-    //   })
-  }
-
+  const handleSearch = async (city) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const weather = await fetchWeatherData(city);
+      const forecast = await fetchForecastData(city);
+      setWeatherData(weather);
+      setForecastData(forecast);
+    } catch (err) {
+      setError(err.message);
+      setWeatherData(null);
+      setForecastData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-   <div className='App'>
-   <SearchBar onSearchChange={handleOnSearchChange} location ={SearchData}/>
-   <ForecastPanel location = {SearchData}/>
-   {/* {forecast && <WeatherDisplay data = {forecast} />} */}
-   <WeatherDisplay location = {SearchData}/>
-   </div>
+    <div className="flex flex-col md:flex-row w-full h-screen">
+      <Sidebar onSearch={handleSearch} />
+      <div className="flex-1 p-8 overflow-y-auto pt-20 md:pt-8">
+        {!weatherData && !loading && !error && <StartPage />}
+        {loading && <p className="text-center text-lg">Loading...</p>}
+        {error && <p className="text-center text-lg text-error">{error}</p>}
+        {weatherData && (
+          <>
+            <WeatherDisplay weatherData={weatherData} />
+            {forecastData && <ForecastPanal forecastData={forecastData} />}
+          </>
+        )}
+      </div>
+    </div>
   );
 }
 

@@ -1,61 +1,26 @@
-import '../Style.css';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-const API_KEY = "0e15999fe3033f1c043ecf402d7219ed"; 
-
-export default function ForecastPanel({ location }) {
-  const [weatherData, setWeatherData] = useState(null);
-  const [error, setError] = useState("!!Please Enter Location!!");
-
-  const formatDate = () => {
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-    const currentDate = new Date();
-    return `${days[currentDate.getDay()]}, ${currentDate.getDate()} ${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
-  };
-
-  useEffect(() => {
-    if (!location) return;
-
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${API_KEY}&units=metric`)
-      .then(response => response.json())
-      .then(data => {
-        if (data.cod !== 200) {
-          setError(data.message); // Store error message if location is not found
-          setWeatherData(null);
-        } else {
-          setWeatherData(data);
-          setError(null); // Clear any previous errors
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching weather data:', error);
-        setError('Network error. Please try again.');
-        setWeatherData(null);
-      });
-  }, [location]);
+const ForecastPanal = ({ forecastData }) => {
+  if (!forecastData || forecastData.length === 0) {
+    return null;
+  }
 
   return (
-    <div className="weather-panel">
-      {error ? (
-        <p className="error-message">{error}</p>
-      ) : weatherData ? (
-        <div className='inner-data'>
-          <h2>Weather in {weatherData.name}</h2>
-          <img src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`} alt="Weather Icon" />
-          <p>{formatDate()}</p>
-          <p>Temperature: {Math.round(weatherData.main.temp)}°C</p>
-          <p>Weather: {weatherData.weather[0].description}</p>
-          <p>Humidity: {weatherData.main.humidity}%</p>
-          <p>Wind Speed: {weatherData.wind.speed} m/s</p>
-          {/* <p>Max Temperature: {Math.round(weatherData.main.temp_max)}°C</p>
-          <p>Min Temperature: {Math.round(weatherData.main.temp_min)}°C</p> */}
-          <p>Description: {weatherData.weather[0].main}</p>
-        </div>
-      ) : (
-        <p>Loading weather data...</p>
-      )}
+    <div className="card shadow-xl p-8 mt-8">
+      <h3 className="text-2xl font-bold mb-4 text-center text-primary">5-Day Forecast</h3>
+      <div className="flex flex-wrap justify-around space-y-4 md:space-y-4">
+        {forecastData.map((day, index) => (
+          <div key={index} className="card-secondary p-4 text-center w-full md:w-1/5 m-2 rounded-lg">
+            <p className="text-sm text-primary/70">{day.day}</p>
+            <p className="text-lg font-semibold text-primary">{day.date}</p>
+            <img src={day.icon} alt={day.description} className="w-16 h-16 mx-auto" />
+            <p className="font-bold text-primary">{day.temperature}°C</p>
+            <p className="text-sm capitalize text-primary/70">{day.description}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
+
+export default ForecastPanal;
